@@ -1,15 +1,21 @@
+import os
 import boto3
+from dotenv import load_dotenv
 
-# Retrieve the list of existing buckets
-# s3 = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key,
-#                                   region_name=region)
-s3 = boto3.client('s3')
-response = s3.list_buckets()
+load_dotenv()
+ACCESS_KEY = os.getenv("aws_access_key_id")
+SECRET_KEY = os.getenv("aws_secret_access_key")
 
-def get_buckets(response):
-    s3_client = boto3.client('s3')
+
+def get_session():
+    session = boto3.Session(
+        aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY
+    )
+    return session
+
+
+def read_buckets():
+    session = get_session()
+    s3_client = session.client("s3")
     response = s3_client.list_buckets()
-    buckets = [bucket['Name'] for bucket in response['Buckets']]
-    print("Buckets:", buckets)
-    return buckets
-        
+    return response

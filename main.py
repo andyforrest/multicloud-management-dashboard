@@ -2,8 +2,7 @@ import os
 from typing import Union
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from aws import get_buckets
-import boto3
+from aws import read_buckets
 
 load_dotenv()
 ACCESS_KEY = os.getenv("aws_access_key_id")
@@ -11,6 +10,7 @@ SECRET_KEY = os.getenv("aws_secret_access_key")
 
 print(ACCESS_KEY)
 print(SECRET_KEY)
+
 app = FastAPI()
 
 
@@ -23,13 +23,9 @@ def read_root():
 def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
 
-@app.get("/buckets/")
-def read_buckets():
-    s3 = boto3.client(
-        's3',
-        aws_access_key_id=ACCESS_KEY,
-        aws_secret_access_key=SECRET_KEY)
-    response = s3.list_buckets()
-    buckets = get_buckets(response)
-    return {"buckets": buckets}
 
+@app.get("/buckets/")
+def list_buckets():
+    response = read_buckets()
+    buckets = [bucket["Name"] for bucket in response["Buckets"]]
+    return {"buckets": buckets}

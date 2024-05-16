@@ -2,7 +2,7 @@ import os
 from typing import Union
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from aws import read_buckets
+from routers import aws, openstack
 
 load_dotenv()
 ACCESS_KEY = os.getenv("aws_access_key_id")
@@ -24,8 +24,5 @@ def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
 
 
-@app.get("/buckets/")
-def list_buckets():
-    response = read_buckets()
-    buckets = [bucket["Name"] for bucket in response["Buckets"]]
-    return {"buckets": buckets}
+app.include_router(aws.router)
+app.include_router(openstack.router)

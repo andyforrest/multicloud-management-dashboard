@@ -28,7 +28,8 @@ def list_buckets():
 
 @router.get("/instances")
 def list_ec2_instances():
+    region = os.getenv("aws_region")
     session = get_session()
-    ec2_client = session.client("ec2")
+    ec2_client = session.client("ec2", region_name=region)
     response = ec2_client.describe_instances()
     return {"ec2 instances: ": response}

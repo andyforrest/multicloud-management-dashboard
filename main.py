@@ -2,7 +2,7 @@ import os
 from typing import Union
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from routers import aws, openstack
+from routers import aws, openstack, azureCloud
 
 load_dotenv()
 ACCESS_KEY = os.getenv("aws_access_key_id")
@@ -26,3 +26,4 @@ def read_item(item_id: int, q: Union[str, None] = None):
 
 app.include_router(aws.router)
 app.include_router(openstack.router)
+app.include_router(azureCloud.router)

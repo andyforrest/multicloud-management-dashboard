@@ -14,4 +14,4 @@ conn = openstack.connect(cloud="openstack")
 def list_servers():
     print("List Servers:")
     for server in conn.compute.servers():
-        return {"server: ": server.to_dict()}
+        return {"server: ": server.name}

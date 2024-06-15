@@ -11,45 +11,21 @@ tenant_id = os.getenv("azure_tenant_id")
 client_secret = os.getenv("azure_client_secret")
 
 token_credential = ClientSecretCredential(
-    tenant_id=tenant_id,
-    client_id=client_id,
-    client_secret=client_secret
+    tenant_id=tenant_id, client_id=client_id, client_secret=client_secret
 )
+
 
 @router.get("/containers")
 def get_containers():
     url = os.getenv("azure_account_url")
     # Create the BlobServiceClient
     blob_service_client = BlobServiceClient(
-        account_url=url,
-        credential=token_credential
+        account_url=url, credential=token_credential
     )
     containers = blob_service_client.list_containers()
     for container in containers:
-        print(container['name'])
+        print(container["name"])
         return {"Containers": container["name"]}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # import os
@@ -78,4 +54,3 @@ def get_containers():
 # containers = storage_client.blob_containers.list(resource_group_name, storage_account_name)
 # for container in containers:
 #     print(container.name)
-

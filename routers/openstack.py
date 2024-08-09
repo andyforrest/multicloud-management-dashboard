@@ -8,8 +8,13 @@ load_dotenv()
 
 
 # conn = openstack.connect(cloud="openstack")
-conn = openstack.connect(cloud="ovh")
-# conn = openstack.connect(cloud="vexxhost")
+# conn = openstack.connect(cloud="ovh")
+conn = openstack.connect(cloud="vexxhost")
+
+# image_name = "ubuntu-2204-kube-v1.27.3"
+# flavour_name = "ubuntu-2204-kube-v1.27.3"
+# network_name = "openstacksdk-example-project-network"
+# keypair_name = "demo-key-pair"
 
 
 @router.get("/servers")
@@ -19,51 +24,24 @@ def list_servers():
     return servers
 
 
-@router.post("/servers")
-def create_server():
-    print("Create Server:")
-
-    image = conn.image.find_image("Ubuntu 20.04 - UEFI")
-    flavor = conn.compute.find_flavor("d2-2")
-    network = conn.network.find_network("demo-network")
-    keypair = conn.compute.find_keypair("demo-key-pair")
-
-    print(image)
-    print(flavor)
-    print(network)
-    print(keypair)
-
-    server = conn.compute.create_server(
-        name="new-server",
-        image_id=image.id,
-        flavor_id=flavor[0].id,
-        networks=[{"uuid": network.id}],
-        key_name=keypair.name,
-    )
-
-    server = conn.compute.wait_for_server(server)
-
-    return{"server: ": server}
-
-
 @router.get("/images")
 def list_images():
     print("List Images:")
-    images = [image.name for image in conn.compute.images()]
+    images = [image.to_dict() for image in conn.compute.images()]
     return images
 
 
 @router.get("/flavours")
 def list_flavours():
     print("List Flavours:")
-    flavors = [flavor for flavor in conn.compute.images()]
+    flavors = [flavor.to_dict() for flavor in conn.compute.images()]
     return flavors
 
 
-@router.get("/networks", response_model=list[str])
+@router.get("/networks")
 async def list_networks():
     print("List Networks:")
-    networks = [network.name for network in conn.network.networks()]
+    networks = [network.to_dict() for network in conn.network.networks()]
     return networks
 
 
@@ -89,16 +67,15 @@ def create_network():
     return {"network name: ": example_network, "subnet name: ": example_subnet}
 
 
-@router.get("/keypairs", response_model=list[str])
+@router.get("/keypairs")
 def list_keypairs():
-    print("List Networks:")
-    keypairs = [keypair.name for keypair in conn.compute.keypairs()]
+    keypairs = [keypair.to_dict() for keypair in conn.compute.keypairs()]
     return keypairs
 
 
-@router.get("/regions", response_model=list[str])
+@router.get("/regions")
 def list_regions():
     print("List Regions:")
 
-    regions = [region.id for region in conn.identity.regions()]
+    regions = [region.to_dict() for region in conn.identity.regions()]
     return regions

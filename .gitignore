@@ -3,3 +3,4 @@
 __pycache__
 clouds.yaml
 *.pem
+node_modules

@@ -6,6 +6,7 @@ import S3Buckets from './components/AWS/S3Buckets.tsx';
 import AWSVolumes from './components/AWS/AWSVolume.tsx'
 import AzureContainers from './components/Azure/AzureContainers.tsx';
 import AzureVM from './components/Azure/AzureVM.tsx';
+import OpenStackServers from './components/Openstack/OpenStackServers.tsx';
 // import AzureContainers from './AzureContainers';
 // import OpenStackVolumes from './OpenStackVolumes';
 
@@ -22,10 +23,7 @@ const App = () => {
               <Route path="/aws-volumes" element={<AWSVolumes />} />
               <Route path="/azure-containers" element={<AzureContainers />} />
               <Route path="/azure-vm" element={<AzureVM />} />
-               {/* <Route path="/azure-containers" element={<AzureContainers />} />
-              <Route path="/openstack-volumes" element={<OpenStackVolumes />} /> */}
-              {/* <Route path="/azure-containers" element={<AzureContainers />} />
-              <Route path="/openstack-volumes" element={<OpenStackVolumes />} /> */}
+              <Route path="/openstack-servers" element={<OpenStackServers />} />
             </Routes>
           </div>
         </main>

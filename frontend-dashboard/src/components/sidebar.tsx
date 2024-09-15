@@ -96,9 +96,9 @@ const Sidebar = () => {
         {activeProvider === 'openstack' && (
           <>
             <li>
-              <Link to="/openstack-volumes" className="flex items-center p-2 text-sm hover:bg-blue-700 rounded-md">
+              <Link to="/openstack-servers" className="flex items-center p-2 text-sm hover:bg-blue-700 rounded-md">
                 <ArchiveBoxIcon className="h-5 w-5 mr-2" />
-                OpenStack Volumes
+                OpenStack Servers
               </Link>
             </li>
           </>

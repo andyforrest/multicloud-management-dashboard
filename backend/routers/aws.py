@@ -80,12 +80,12 @@ def create_s3_bucket(bucket_name: str):
 
     except s3_client.exceptions.BucketAlreadyExists:
         raise HTTPException(
-            status_code=400, detail=f"Bucket name '{bucket_name}' already exists. Please choose a unique name."
+            status_code=400,
+            detail=f"Bucket name '{bucket_name}' already exists. Please choose a unique name.",
         )
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error creating bucket: {str(e)}")
-
 
 
 @router.delete("/bucket/{bucket_name}")

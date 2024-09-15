@@ -22,9 +22,11 @@ def get_blob_service_client():
     url = os.getenv("azure_account_url")
     return BlobServiceClient(account_url=url, credential=token_credential)
 
+
 # Helper function to get the Compute Management Client
 def get_compute_client():
     return ComputeManagementClient(token_credential, subscription_id)
+
 
 # Route to list all containers
 @router.get("/containers")
@@ -37,7 +39,10 @@ def get_containers():
         return {"containers": container_list}
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving containers: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error retrieving containers: {str(e)}"
+        )
+
 
 # Route to create a container
 @router.post("/container/{container_name}")
@@ -50,12 +55,14 @@ def create_container(container_name: str):
 
         return {
             "message": f"Container '{container_name}' created successfully",
-            "container_name": container_name
+            "container_name": container_name,
         }
 
     except Exception as e:
         # Handle specific Azure exceptions like ResourceExistsError if needed
-        raise HTTPException(status_code=500, detail=f"Error creating container: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error creating container: {str(e)}"
+        )
 
 
 # Route to delete a container
@@ -68,13 +75,14 @@ def delete_container(container_name: str):
         container_client = blob_service_client.get_container_client(container_name)
         container_client.delete_container()
 
-        return {
-            "message": f"Container '{container_name}' deleted successfully"
-        }
+        return {"message": f"Container '{container_name}' deleted successfully"}
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error deleting container: {str(e)}")
-    
+        raise HTTPException(
+            status_code=500, detail=f"Error deleting container: {str(e)}"
+        )
+
+
 # Route to list all virtual machines in a specific resource group
 @router.get("/vms/{resource_group_name}")
 def get_virtual_machines(resource_group_name: str):
@@ -87,9 +95,10 @@ def get_virtual_machines(resource_group_name: str):
             return {"message": "No VMs found in the specified resource group"}
 
         return {"vms": vm_list}
-    
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error retrieving VMs: {str(e)}")
+
 
 # Route to create a new virtual machine in a specific resource group
 @router.post("/vm/{resource_group_name}/{vm_name}")
@@ -137,6 +146,7 @@ def create_virtual_machine(resource_group_name: str, vm_name: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error creating VM: {str(e)}")
 
+
 # Route to delete a virtual machine
 @router.delete("/vm/{resource_group_name}/{vm_name}")
 def delete_virtual_machine(resource_group_name: str, vm_name: str):
@@ -149,8 +159,10 @@ def delete_virtual_machine(resource_group_name: str, vm_name: str):
         )
         vm_result = async_vm_delete.result()
 
-        return {"message": f"Virtual machine '{vm_name}' deleted successfully",
-                "vm_details": vm_result}
+        return {
+            "message": f"Virtual machine '{vm_name}' deleted successfully",
+            "vm_details": vm_result,
+        }
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error deleting VM: {str(e)}")

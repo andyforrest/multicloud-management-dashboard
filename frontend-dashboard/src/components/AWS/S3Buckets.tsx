@@ -65,6 +65,22 @@ const S3Buckets = () => {
     <div className="p-6">
       <h1 className="text-2xl mb-4">AWS S3 Buckets</h1>
 
+       {/* Delete button for selected bucket */}
+       {selectedBucket && (
+        <div className="mt-6">
+          <p>
+            Selected Bucket: <strong>{selectedBucket}</strong>
+          </p>
+          <button
+            onClick={() => deleteBucket(selectedBucket)}
+            className={`bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mt-4 mb-4 ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={isDeleting || isLoading} // Disable if creating/deleting
+          >
+            {isDeleting ? 'Deleting...' : 'Delete Bucket'}
+          </button>
+        </div>
+      )}
+
       {/* Table for displaying S3 buckets */}
       {Array.isArray(buckets) && buckets.length > 0 ? (
         <table className="min-w-full bg-white shadow-md rounded mb-6">
@@ -112,22 +128,6 @@ const S3Buckets = () => {
       {errorMessage && (
         <div className="text-red-500 mb-4">
           {errorMessage}
-        </div>
-      )}
-
-      {/* Delete button for selected bucket */}
-      {selectedBucket && (
-        <div className="mt-6">
-          <p>
-            Selected Bucket: <strong>{selectedBucket}</strong>
-          </p>
-          <button
-            onClick={() => deleteBucket(selectedBucket)}
-            className={`bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mt-4 ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
-            disabled={isDeleting || isLoading} // Disable if creating/deleting
-          >
-            {isDeleting ? 'Deleting...' : 'Delete Bucket'}
-          </button>
         </div>
       )}
     </div>

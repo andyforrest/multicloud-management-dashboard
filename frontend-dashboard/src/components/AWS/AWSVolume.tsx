@@ -23,6 +23,7 @@ const AWSVolumes = () => {
     try {
       setIsLoading(true); // Show loading state
       const response = await axios.post('http://localhost:8000/aws/volume');
+      alert('Volume created successfully');
       console.log('Volume Created:', response.data);
       setIsLoading(false);
       fetchVolumes(); // Refresh the volume list after creation
@@ -37,6 +38,7 @@ const AWSVolumes = () => {
     try {
       setIsDeleting(true); // Show loading state
       await axios.delete(`http://localhost:8000/aws/volume/${volumeId}`);
+      alert('Volume deleted successfully');
       console.log(`Volume ${volumeId} deleted`);
       setSelectedVolume(null); // Reset the selected volume
       setIsDeleting(false);

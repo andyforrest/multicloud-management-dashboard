@@ -14,48 +14,53 @@ const AWSEC2Instances: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [creatingInstance, setCreatingInstance] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [selectedInstance, setSelectedInstance] = useState<EC2Instance | null>(null);
 
   // Fetch EC2 Instances
   const fetchEC2Instances = async () => {
+    setLoading(true); // Start loading
     try {
       const response = await axios.get('http://localhost:8000/aws/instances');
       const reservations = response.data.ec2_instances.Reservations;
       const allInstances = reservations.flatMap((reservation: any) => reservation.Instances);
       setInstances(allInstances);
-      setLoading(false);
     } catch (error) {
       setError('Failed to fetch EC2 instances');
-      setLoading(false);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
   // Create a new EC2 instance
   const createEC2Instance = async () => {
-    setCreatingInstance(true);
+    setCreatingInstance(true); // Set creating state
     try {
       await axios.post('http://localhost:8000/aws/instance');
       alert('EC2 Instance created successfully');
-      fetchEC2Instances();
+      fetchEC2Instances(); // Refresh instance list after creation
     } catch (error) {
       console.error('Error creating EC2 instance:', error);
       alert('Failed to create EC2 instance');
     } finally {
-      setCreatingInstance(false);
+      setCreatingInstance(false); // Stop creating state
     }
   };
 
   // Delete the selected EC2 instance
   const deleteEC2Instance = async () => {
     if (!selectedInstance) return;
+    setIsDeleting(true); // Start deleting
     try {
       await axios.delete(`http://localhost:8000/aws/instance/${selectedInstance.InstanceId}`);
       alert(`EC2 Instance ${selectedInstance.InstanceId} deleted successfully`);
-      fetchEC2Instances();
-      setSelectedInstance(null);
+      fetchEC2Instances(); // Refresh the instance list after deletion
+      setSelectedInstance(null); // Clear the selection after deletion
     } catch (error) {
       console.error('Error deleting EC2 instance:', error);
       alert(`Failed to delete EC2 Instance ${selectedInstance.InstanceId}`);
+    } finally {
+      setIsDeleting(false); // Stop deleting
     }
   };
 
@@ -64,11 +69,11 @@ const AWSEC2Instances: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>; // Show loading state
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>Error: {error}</div>; // Show error state
   }
 
   return (
@@ -78,7 +83,7 @@ const AWSEC2Instances: React.FC = () => {
       {/* Create EC2 Instance Button */}
       <button
         onClick={createEC2Instance}
-        disabled={creatingInstance}
+        disabled={creatingInstance || isDeleting} // Disable if creating or deleting
         className={`mb-4 px-4 py-2 text-white ${creatingInstance ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'} rounded-md`}
       >
         {creatingInstance ? 'Creating...' : 'Create EC2 Instance'}
@@ -88,9 +93,10 @@ const AWSEC2Instances: React.FC = () => {
       {selectedInstance && (
         <button
           onClick={deleteEC2Instance}
-          className="ml-4 mb-4 px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-md"
+          disabled={isDeleting || creatingInstance} // Disable if creating or deleting
+          className={`ml-4 mb-4 px-4 py-2 text-white ${isDeleting ? 'bg-gray-400' : 'bg-red-600 hover:bg-red-700'} rounded-md`}
         >
-          Delete EC2 Instance {selectedInstance.InstanceId}
+          {isDeleting ? 'Deleting...' : `Delete EC2 Instance ${selectedInstance.InstanceId}`}
         </button>
       )}
 

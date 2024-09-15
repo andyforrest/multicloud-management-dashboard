@@ -6,6 +6,8 @@ const S3Buckets = () => {
   const [selectedBucket, setSelectedBucket] = useState<string | null>(null);
   const [bucketName, setBucketName] = useState('');
   const [errorMessage, setErrorMessage] = useState(''); // For error messages
+  const [isLoading, setIsLoading] = useState<boolean>(false); // Loading state for bucket creation
+  const [isDeleting, setIsDeleting] = useState<boolean>(false); // Loading state for bucket deletion
 
   // Fetch all S3 buckets
   const fetchBuckets = async () => {
@@ -22,7 +24,9 @@ const S3Buckets = () => {
   const createBucket = async () => {
     try {
       setErrorMessage(''); // Clear any previous error
+      setIsLoading(true); // Set loading state
       const response = await axios.post(`http://localhost:8000/aws/bucket/${bucketName}`);
+      alert('Bucket created successfully');
       console.log('S3 Bucket Created:', response.data);
       setBucketName(''); // Clear input after successful creation
       fetchBuckets(); // Refresh the bucket list after creation
@@ -33,17 +37,23 @@ const S3Buckets = () => {
         setErrorMessage('An unexpected error occurred. Please try again.');
       }
       console.error('Error creating S3 bucket:', error);
+    } finally {
+      setIsLoading(false); // Stop loading state
     }
   };
 
   // Delete an S3 bucket
   const deleteBucket = async (bucketName: string) => {
     try {
+      setIsDeleting(true); // Set deleting state
       await axios.delete(`http://localhost:8000/aws/bucket/${bucketName}`);
+      alert('Bucket deleted successfully');
       fetchBuckets(); // Refresh buckets after deletion
       setSelectedBucket(null); // Reset selected bucket
     } catch (error) {
       console.error('Error deleting S3 bucket:', error);
+    } finally {
+      setIsDeleting(false); // Stop deleting state
     }
   };
 
@@ -87,12 +97,14 @@ const S3Buckets = () => {
           value={bucketName}
           onChange={(e) => setBucketName(e.target.value)}
           className="border rounded p-2 mr-2"
+          disabled={isLoading || isDeleting} // Disable input if creating/deleting
         />
         <button
           onClick={createBucket}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className={`bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          disabled={isLoading || isDeleting} // Disable button if creating/deleting
         >
-          Create Bucket
+          {isLoading ? 'Creating...' : 'Create Bucket'}
         </button>
       </div>
 
@@ -111,9 +123,10 @@ const S3Buckets = () => {
           </p>
           <button
             onClick={() => deleteBucket(selectedBucket)}
-            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mt-4"
+            className={`bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mt-4 ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={isDeleting || isLoading} // Disable if creating/deleting
           >
-            Delete Bucket
+            {isDeleting ? 'Deleting...' : 'Delete Bucket'}
           </button>
         </div>
       )}
@@ -122,3 +135,4 @@ const S3Buckets = () => {
 };
 
 export default S3Buckets;
+

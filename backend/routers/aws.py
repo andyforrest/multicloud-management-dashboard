@@ -26,7 +26,7 @@ def list_buckets():
     try:
         response = s3_client.list_buckets()
         buckets = [bucket["Name"] for bucket in response["Buckets"]]
-        return {"buckets": buckets}
+        return {"response": response}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error listing buckets: {str(e)}")
 
@@ -80,11 +80,12 @@ def create_s3_bucket(bucket_name: str):
 
     except s3_client.exceptions.BucketAlreadyExists:
         raise HTTPException(
-            status_code=400, detail=f"Bucket {bucket_name} already exists"
+            status_code=400, detail=f"Bucket name '{bucket_name}' already exists. Please choose a unique name."
         )
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error creating bucket: {str(e)}")
+
 
 
 @router.delete("/bucket/{bucket_name}")

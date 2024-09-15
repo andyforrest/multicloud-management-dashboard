@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Sidebar from './components/sidebar';
 import AWSEC2Instances from './components/AWS/AWSEC2Instances.tsx'; // Make sure these components are correct
+import S3Buckets from './components/AWS/S3Buckets.tsx';
 // import AzureContainers from './AzureContainers';
 // import OpenStackVolumes from './OpenStackVolumes';
 
@@ -14,6 +15,7 @@ const App = () => {
           <div className="container mx-auto">
             <Routes>
               <Route path="/aws-ec2" element={<AWSEC2Instances />} />
+              <Route path="/aws-s3" element={<S3Buckets />} />
               {/* <Route path="/azure-containers" element={<AzureContainers />} />
               <Route path="/openstack-volumes" element={<OpenStackVolumes />} /> */}
             </Routes>

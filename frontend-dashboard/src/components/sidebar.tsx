@@ -85,6 +85,12 @@ const Sidebar = () => {
                 Azure Containers
               </Link>
             </li>
+            <li>
+              <Link to="/azure-vm" className="flex items-center p-2 text-sm hover:bg-blue-700 rounded-md">
+                <ServerIcon className="h-5 w-5 mr-2" />
+                Azure VMs
+              </Link>
+            </li>
           </>
         )}
         {activeProvider === 'openstack' && (

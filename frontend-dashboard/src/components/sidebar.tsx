@@ -68,6 +68,13 @@ const Sidebar = () => {
                 AWS S3 Buckets
               </Link>
             </li>
+            <li>
+              <Link to="/aws-volumes" className="flex items-center p-2 text-sm hover:bg-blue-700 rounded-md">
+                <CloudIcon className="h-5 w-5 mr-2" />
+                AWS Volumes
+              </Link>
+            </li>
+            
           </>
         )}
         {activeProvider === 'azure' && (

@@ -24,26 +24,6 @@ const AzureContainers = () => {
     }
   };
 
-  // Create a new container
-//   const createContainer = async () => {
-//     setIsCreating(true);
-//     setErrorMessage('');
-//     try {
-//       await axios.post(`http://localhost:8000/azure/container/${containerName}`);
-//       setContainerName('');
-//       fetchContainers(); // Refresh the container list
-//     } catch (error: any) {
-//       setErrorMessage(
-//         error.response && error.response.data && error.response.data.detail
-//           ? error.response.data.detail
-//           : 'Error creating container'
-//       );
-//       console.error('Error creating container:', error);
-//     } finally {
-//       setIsCreating(false);
-//     }
-//   };
-
 const createContainer = async () => {
     try {
       setErrorMessage(''); // Clear any previous error
@@ -89,6 +69,24 @@ const createContainer = async () => {
   return (
     <div className="p-6">
       <h1 className="text-2xl mb-4">Azure Blob Storage Containers</h1>
+
+       {/* Delete button for selected container */}
+       {selectedContainer && (
+        <div className="mt-6">
+          <p>
+            Selected Container: <strong>{selectedContainer}</strong>
+          </p>
+          <button
+            onClick={() => deleteContainer(selectedContainer)}
+            disabled={isDeleting}
+            className={`bg-red-600 text-white px-4 py-2 mb-4 rounded ${
+              isDeleting ? 'bg-gray-400' : 'hover:bg-red-700'
+            } mt-4`}
+          >
+            {isDeleting ? 'Deleting...' : 'Delete Container'}
+          </button>
+        </div>
+      )}
 
       {/* Display containers in a table */}
       {isLoading ? (
@@ -141,23 +139,6 @@ const createContainer = async () => {
       {/* Error message */}
       {errorMessage && <div className="text-red-500 mb-4">{errorMessage}</div>}
 
-      {/* Delete button for selected container */}
-      {selectedContainer && (
-        <div className="mt-6">
-          <p>
-            Selected Container: <strong>{selectedContainer}</strong>
-          </p>
-          <button
-            onClick={() => deleteContainer(selectedContainer)}
-            disabled={isDeleting}
-            className={`bg-red-600 text-white px-4 py-2 rounded ${
-              isDeleting ? 'bg-gray-400' : 'hover:bg-red-700'
-            } mt-4`}
-          >
-            {isDeleting ? 'Deleting...' : 'Delete Container'}
-          </button>
-        </div>
-      )}
     </div>
   );
 };

@@ -45,17 +45,18 @@ def create_container(container_name: str):
     try:
         blob_service_client = get_blob_service_client()
 
-        # Create container
+        # Create the container
         container_client = blob_service_client.create_container(container_name)
-        
+
         return {
             "message": f"Container '{container_name}' created successfully",
-            "container_name": container_name,
-            "container client": container_client
+            "container_name": container_name
         }
 
     except Exception as e:
+        # Handle specific Azure exceptions like ResourceExistsError if needed
         raise HTTPException(status_code=500, detail=f"Error creating container: {str(e)}")
+
 
 # Route to delete a container
 @router.delete("/container/{container_name}")
